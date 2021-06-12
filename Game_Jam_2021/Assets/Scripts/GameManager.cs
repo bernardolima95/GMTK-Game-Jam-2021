@@ -16,22 +16,17 @@ public class GameManager : MonoBehaviour
 
 
 
-    public void AsteroidDestroyed(Asteroid asteroid){
-        //this.explosion.transform.position = asteroid.transform.position;
-        //this.explosion.Play();
-        ParticleSystem explosion = Instantiate(this.explosionPrefab, asteroid.transform.position, asteroid.transform.rotation);
+    public void EnemyDestroyed(Enemy enemy){
+        ParticleSystem explosion = Instantiate(this.explosionPrefab, enemy.transform.position, enemy.transform.rotation);
         explosion.Play();
 
-        this.score += (int)(1/asteroid.size*10);           
+        this.score += (int)(1/enemy.size*10);           
     }
 
     public void PlayerDied(){
         
-
         ParticleSystem explosion = Instantiate(this.explosionPrefab, this.player.transform.position, this.player.transform.rotation);
         explosion.Play();
-        //this.explosion.transform.position = this.player.transform.position;
-        //this.explosion.Play();
         
         this.lives--;
         

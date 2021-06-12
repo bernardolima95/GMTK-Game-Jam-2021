@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bacb8afd5585984d8e5b7fe663b3dbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  asteroidPrefab: {fileID: 4891294998628923826, guid: 2496718e8781a4b4fb543f1750f9434a, type: 3}
+  enemyPrefab: {fileID: 4891294998628923826, guid: 2496718e8781a4b4fb543f1750f9434a, type: 3}
   pilot: {fileID: 75752001}
   trajectoryVariance: 15
   spawnRate: 2
@@ -408,7 +408,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 75751997}
-  turnSpeed: 0.5
+  turnSpeed: 0.1
 --- !u!60 &618768317
 PolygonCollider2D:
   m_ObjectHideFlags: 0

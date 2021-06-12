@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class AsteroidSpawner : MonoBehaviour{
+public class EnemySpawner : MonoBehaviour{
     
-    public Asteroid asteroidPrefab;
+    public Enemy enemyPrefab;
     public Transform pilot;
 
     public float trajectoryVariance = 15.0f; 
@@ -22,10 +22,10 @@ public class AsteroidSpawner : MonoBehaviour{
             float variance = Random.Range(-trajectoryVariance, trajectoryVariance);
             Quaternion rotation = Quaternion.AngleAxis(variance, Vector3.forward);
             
-            Asteroid asteroid = Instantiate(this.asteroidPrefab, spawnPoint, rotation);
+            Enemy enemy = Instantiate(this.enemyPrefab, spawnPoint, rotation);
 
-            asteroid.size = Random.Range(asteroid.minSize, asteroid.maxSize);
-            asteroid.SetTrajectory(rotation * -spawnDirection);
+            enemy.size = Random.Range(enemy.minSize, enemy.maxSize);
+            enemy.SetTrajectory(rotation * -spawnDirection);
 
         }
     }

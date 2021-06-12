@@ -5,9 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - Bullet
-  - Asteroid
   - EnemyBullet
   - Shield
+  - Enemy
+  - Asteroid
   layers:
   - Default
   - TransparentFX
@@ -17,7 +18,7 @@ TagManager:
   - UI
   - Player
   - Bullet
-  - Asteroid
+  - Enemy
   - Boundary
   - Ignore Collisions
   - EnemyBullet

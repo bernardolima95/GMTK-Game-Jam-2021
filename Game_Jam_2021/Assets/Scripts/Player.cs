@@ -63,7 +63,7 @@ public class Player : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision){
         tag = collision.gameObject.tag;
-        if (tag == "Asteroid" || tag == "EnemyBullet"){
+        if (tag == "Enemy" || tag == "EnemyBullet"){
             _rigidbody.velocity = Vector3.zero;
             _rigidbody.angularVelocity = 0.0f;
 

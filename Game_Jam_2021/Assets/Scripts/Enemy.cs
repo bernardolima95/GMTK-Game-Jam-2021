@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Asteroid : MonoBehaviour{
+public class Enemy : MonoBehaviour{
     
     public Sprite[] sprites;
     public Bullet bulletPrefab;
@@ -50,7 +50,7 @@ public class Asteroid : MonoBehaviour{
                 CreateSplit();
 
             }
-            FindObjectOfType<GameManager>().AsteroidDestroyed(this);
+            FindObjectOfType<GameManager>().EnemyDestroyed(this);
             Destroy(this.gameObject);
         }
         if(collision.gameObject.tag == "AggroCircle"){
@@ -89,7 +89,7 @@ public class Asteroid : MonoBehaviour{
         Vector2 position = this.transform.position;
         position += Random.insideUnitCircle * 0.5f;
 
-        Asteroid half = Instantiate(this, position, this.transform.rotation);
+        Enemy half = Instantiate(this, position, this.transform.rotation);
         half.size = this.size * 0.5f;
 
         half.SetTrajectory(Random.insideUnitCircle.normalized * this.speed);
