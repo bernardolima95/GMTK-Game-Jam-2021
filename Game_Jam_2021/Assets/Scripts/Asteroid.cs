@@ -16,14 +16,11 @@ public class Asteroid : MonoBehaviour{
 
     public void SetTrajectory(Vector2 direction){
         _rigidbody.AddForce(direction * this.speed);
-
-        Destroy(this.gameObject, this.maxLifetime);
     }
 
     private void Awake(){
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _rigidbody = GetComponent<Rigidbody2D>();
-        
     }
 
     private void Start(){
@@ -33,6 +30,31 @@ public class Asteroid : MonoBehaviour{
         this.transform.localScale = Vector3.one * this.size;
 
         _rigidbody.mass = this.size;
+
+        Destroy(this.gameObject, this.maxLifetime);
     }
 
+    private void OnCollisionEnter2D(Collision2D collision) {
+        
+        if(collision.gameObject.tag == "Bullet") {
+
+            if(this.size >= 2*this.minSize) {
+                CreateSplit();
+                CreateSplit();
+            }
+
+            Destroy(this.gameObject);
+        }
+    }
+
+    private void CreateSplit() {
+        
+        Vector2 position = this.transform.position;
+        position += Random.insideUnitCircle * 0.5f;
+
+        Asteroid half = Instantiate(this, position, this.transform.rotation);
+        half.size = this.size * 0.5f;
+
+        half.SetTrajectory(Random.insideUnitCircle.normalized * this.speed);
+    }
 }
