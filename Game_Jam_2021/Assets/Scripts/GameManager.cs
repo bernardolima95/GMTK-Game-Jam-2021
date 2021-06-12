@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public int score = 0;
     public float boostMeter = 100;
     public float respawnTime = 3;
+    public float shieldRespawnTime = 10;
     public float invulnerabilityTime = 3;
 
 
@@ -37,11 +38,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void PlayerBoost(){ // this feels like a bad idea
-        ParticleSystem boost = Instantiate(this.boostPrefab, this.player.transform.position, this.player.transform.rotation);
-        boostMeter -= 20;
-        boost.Play();
-    }
+    // public void PlayerBoost(){ // this feels like a bad idea
+    //     ParticleSystem boost = Instantiate(this.boostPrefab, this.player.transform.position, this.player.transform.rotation);
+    //     boostMeter -= 20;
+    //     boost.Play();
+    // }
 
     private void Respawn(){
         this.player.transform.position = Vector3.zero;
