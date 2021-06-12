@@ -54,16 +54,20 @@ public class Enemy : MonoBehaviour{
             Destroy(this.gameObject);
         }
         if(collision.gameObject.tag == "AggroCircle"){
-            if(_target){
+            if(this._target){
                 this.transform.LookAt(_target);
             }
         }
     }
 
-    private void Update(){
-        if (Vector3.Distance(transform.position, _target.position) > 10f){
-            MoveTowards(_target.position);
-            RotateTowards(_target.position);
+    private void FixedUpdate(){
+
+        if(!this._target){
+            Debug.Log(this._target);
+        }
+        else if(Vector3.Distance(this.transform.position, this._target.position) > 10f){
+            MoveTowards(this._target.position);
+            RotateTowards(this._target.position);
         }        
     }
 

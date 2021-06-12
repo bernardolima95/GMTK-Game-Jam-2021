@@ -1,23 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     public Player player;
+    public Shield shield;
     public ParticleSystem explosionPrefab;
-    public ParticleSystem boostPrefab;
     
     public int lives = 3;
     public int score = 0;
-    public float boostMeter = 100;
     public float respawnTime = 3;
-    public float shieldRespawnTime = 10;
     public float invulnerabilityTime = 3;
 
-
-
     public void EnemyDestroyed(Enemy enemy){
+
         ParticleSystem explosion = Instantiate(this.explosionPrefab, enemy.transform.position, enemy.transform.rotation);
         explosion.Play();
 
@@ -38,18 +33,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // public void PlayerBoost(){ // this feels like a bad idea
-    //     ParticleSystem boost = Instantiate(this.boostPrefab, this.player.transform.position, this.player.transform.rotation);
-    //     boostMeter -= 20;
-    //     boost.Play();
-    // }
-
     private void Respawn(){
+
         this.player.transform.position = Vector3.zero;
         this.player.gameObject.layer = LayerMask.NameToLayer("Ignore Collisions"); //Better practice: OnEnable() on Player.cs
         this.player.gameObject.SetActive(true);
+
+        this.player.health = this.player.maxHealth;
+        this.player.boostMeter = this.player.maxBoostMeter;
         
         Invoke(nameof(TurnOnCollisions), this.invulnerabilityTime);
+
+        this.shield.RespawnShield();
     }
 
     private void TurnOnCollisions(){

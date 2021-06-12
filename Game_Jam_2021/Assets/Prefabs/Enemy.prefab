@@ -154,5 +154,5 @@ MonoBehaviour:
   maxSize: 1.5
   speed: 5
   maxLifetime: 30
-  firingRate: 1
+  firingRate: 4
   turnSpeed: 1
