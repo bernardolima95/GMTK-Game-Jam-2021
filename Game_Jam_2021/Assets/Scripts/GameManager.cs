@@ -5,27 +5,33 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public Player player;
-    public ParticleSystem explosion;
-    public ParticleSystem boost;
+    public ParticleSystem explosionPrefab;
+    public ParticleSystem boostPrefab;
     
     public int lives = 3;
     public int score = 0;
+    public float boostMeter = 100;
     public float respawnTime = 3;
     public float invulnerabilityTime = 3;
 
 
 
     public void AsteroidDestroyed(Asteroid asteroid){
-        this.explosion.transform.position = asteroid.transform.position;
-        this.explosion.Play();
+        //this.explosion.transform.position = asteroid.transform.position;
+        //this.explosion.Play();
+        ParticleSystem explosion = Instantiate(this.explosionPrefab, asteroid.transform.position, asteroid.transform.rotation);
+        explosion.Play();
 
         this.score += (int)(1/asteroid.size*10);           
     }
 
     public void PlayerDied(){
         
-        this.explosion.transform.position = this.player.transform.position;
-        this.explosion.Play();
+
+        ParticleSystem explosion = Instantiate(this.explosionPrefab, this.player.transform.position, this.player.transform.rotation);
+        explosion.Play();
+        //this.explosion.transform.position = this.player.transform.position;
+        //this.explosion.Play();
         
         this.lives--;
         
@@ -37,8 +43,9 @@ public class GameManager : MonoBehaviour
     }
 
     public void PlayerBoost(){ // this feels like a bad idea
-        this.boost.transform.position = this.player.transform.position;
-        this.boost.Play();
+        ParticleSystem boost = Instantiate(this.boostPrefab, this.player.transform.position, this.player.transform.rotation);
+        boostMeter -= 20;
+        boost.Play();
     }
 
     private void Respawn(){

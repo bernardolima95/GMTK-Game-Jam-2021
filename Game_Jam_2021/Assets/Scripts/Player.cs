@@ -55,8 +55,10 @@ public class Player : MonoBehaviour {
     }
 
     private void Boost(){
-        FindObjectOfType<GameManager>().PlayerBoost(); // too far gone
-        _rigidbody.AddForce(this.transform.up * this.thrustSpeed * 20);
+        if(FindObjectOfType<GameManager>().boostMeter >= 20){
+            FindObjectOfType<GameManager>().PlayerBoost(); // too far gone
+            _rigidbody.AddForce(this.transform.up * this.thrustSpeed * 20);
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision){

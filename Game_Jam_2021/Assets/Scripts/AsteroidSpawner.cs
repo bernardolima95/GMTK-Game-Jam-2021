@@ -3,6 +3,7 @@ using UnityEngine;
 public class AsteroidSpawner : MonoBehaviour{
     
     public Asteroid asteroidPrefab;
+    public Transform pilot;
 
     public float trajectoryVariance = 15.0f; 
     public float spawnRate = 2.0f;
@@ -16,7 +17,7 @@ public class AsteroidSpawner : MonoBehaviour{
     private void Spawn(){
         for (int i = 0; i < this.spawnAmount; i++){
             Vector3 spawnDirection = Random.insideUnitCircle.normalized * spawnDistance;
-            Vector3 spawnPoint = this.transform.position + spawnDirection;
+            Vector3 spawnPoint = this.pilot.transform.position + spawnDirection;
 
             float variance = Random.Range(-trajectoryVariance, trajectoryVariance);
             Quaternion rotation = Quaternion.AngleAxis(variance, Vector3.forward);
