@@ -41,8 +41,9 @@ public class Asteroid : MonoBehaviour{
             if(this.size >= 2*this.minSize) {
                 CreateSplit();
                 CreateSplit();
-            }
 
+            }
+            FindObjectOfType<GameManager>().AsteroidDestroyed(this);
             Destroy(this.gameObject);
         }
     }
