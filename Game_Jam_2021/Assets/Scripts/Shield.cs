@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Shield : MonoBehaviour {
@@ -9,12 +10,14 @@ public class Shield : MonoBehaviour {
     public float potency;
     public float respawnRate = 5.0f;
     private float _previousPlayerAngle;
+    private Color originalColor;
 
     private void Awake() {
         this._previousPlayerAngle = player.transform.eulerAngles.z;
     }
 
     private void Start(){
+        this.originalColor = GetComponent<Renderer>().material.color;
         this.potency = this.maxPotency;
     }
 
@@ -38,15 +41,18 @@ public class Shield : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision){
 
-        tag = collision.gameObject.tag;
+        string colliderTag = collision.gameObject.tag;
 
-        if (tag == "Enemy" || tag == "EnemyBullet"){
+        if (colliderTag == "Enemy" || colliderTag == "EnemyBullet"){
 
             this.potency -= this.hitDegradation;
             
             if(this.potency < 0.0f){
+                this.potency = 0.0f;
                 this.DespawnShield();
                 Invoke(nameof(RespawnShield), this.respawnRate);
+            } else {
+                StartCoroutine("HitFlash");
             }
         }
     }
@@ -68,5 +74,12 @@ public class Shield : MonoBehaviour {
         this.gameObject.layer = LayerMask.NameToLayer("Ignore Collisions");
         Renderer renderer = this.gameObject.GetComponent<Renderer>();
         renderer.enabled = false;
+    }
+
+    private IEnumerator HitFlash(){
+        this.gameObject.GetComponent<Renderer>().material.color = new Color(160, 160, 160, 1);
+        yield return new WaitForSeconds(0.1f);
+        this.gameObject.GetComponent<Renderer>().material.color = originalColor;
+        StopCoroutine("HitFlash");
     }
 }

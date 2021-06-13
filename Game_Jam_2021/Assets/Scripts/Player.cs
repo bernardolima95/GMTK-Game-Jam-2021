@@ -77,9 +77,9 @@ public class Player : MonoBehaviour {
     }
 
     private void Boost() {
-       
-        if(this.boostMeter >= this.boostCost){
 
+        if(this.boostMeter >= this.boostCost){
+            Instantiate(this.bulletPrefab, this.transform.position, this.transform.rotation);
             ParticleSystem boost = Instantiate(this.boostPrefab, this.transform.position, this.transform.rotation);
             boostMeter -= this.boostCost;
             boost.Play();
@@ -95,7 +95,9 @@ public class Player : MonoBehaviour {
 
             health -= 1;
 
-            if(this.health < 1){
+            if(this.health <= 0){
+                this.health = 0;
+
                 _rigidbody.velocity = Vector3.zero;
                 _rigidbody.angularVelocity = 0.0f;
 

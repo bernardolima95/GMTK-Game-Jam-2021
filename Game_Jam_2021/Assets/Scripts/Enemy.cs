@@ -46,9 +46,7 @@ public class Enemy : MonoBehaviour{
         if(collision.gameObject.tag == "Bullet") {
 
             if(this.size >= 2*this.minSize) {
-                CreateSplit();
-                CreateSplit();
-
+                    
             }
             FindObjectOfType<GameManager>().EnemyDestroyed(this);
             Destroy(this.gameObject);
@@ -88,14 +86,4 @@ public class Enemy : MonoBehaviour{
         bullet.Project(-this.transform.up);
     }
 
-    private void CreateSplit() {
-        
-        Vector2 position = this.transform.position;
-        position += Random.insideUnitCircle * 0.5f;
-
-        Enemy half = Instantiate(this, position, this.transform.rotation);
-        half.size = this.size * 0.5f;
-
-        half.SetTrajectory(Random.insideUnitCircle.normalized * this.speed);
-    }
 }

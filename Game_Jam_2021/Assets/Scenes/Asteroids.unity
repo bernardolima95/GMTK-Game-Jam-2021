@@ -201,7 +201,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 75751996}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 553992e99994ec24cb41e959e475e60d, type: 3}
+  m_Script: {fileID: 11500000, guid: 2358a3a7178268441b780831159544aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 8923638280338279782, guid: def17722274795d4195054fb3d7ab46c, type: 3}
@@ -678,11 +678,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 618768315}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6fa82d6ae8cf8984f83a335198c6acb1, type: 3}
+  m_Script: {fileID: 11500000, guid: 795293acc99f4054aa07c3fa9f8f5320, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 75751997}
-  turnSpeed: 0.1
+  turnSpeed: 0.2
   maxPotency: 100
   hitDegradation: 20
   potency: 0
@@ -703,8 +703,8 @@ PolygonCollider2D:
   m_Offset: {x: 0, y: 1}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: -1}
-    oldSize: {x: 1.28, y: 0.64}
+    pivot: {x: 0.5, y: -0.3}
+    oldSize: {x: 2.56, y: 1.28}
     newSize: {x: 1.28, y: 0.64}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -712,9 +712,10 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0, y: 0.35}
-      - {x: -0.65, y: -0.25}
-      - {x: 0.65, y: -0.25}
+    - - {x: -0.6, y: 0.2}
+      - {x: -1.5, y: -0.2}
+      - {x: 1.5, y: -0.2}
+      - {x: 0.6, y: 0.2}
 --- !u!4 &618768318
 Transform:
   m_ObjectHideFlags: 0
