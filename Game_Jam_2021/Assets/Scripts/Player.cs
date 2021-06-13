@@ -5,12 +5,19 @@ public class Player : MonoBehaviour {
 
     public Bullet bulletPrefab;
     public ParticleSystem boostPrefab;
+    public SFXPlayer SFXPlayer;
 
     public float thrustSpeed = 1.0f;
     public float turnSpeed = 1.0f;
     public float maxBoostMeter = 100.0f;
     public float boostCost = 20.0f;
     public float boostMeter;
+    public float specialMeter;
+    public float maxSpecialMeter = 100.0f;
+    public float startingSpecialMeter = 0.0f;
+    public float specialBulletCount = 3;
+    public float bulletStrayFactor = 20;
+    public float specialDecayRate = 0.5f;
     public int maxHealth = 5;
     public int health;
 
@@ -18,6 +25,8 @@ public class Player : MonoBehaviour {
     private bool _thrusting;
     private float _turnDirection;
     private Color originalColor;
+    private bool recentlyRespawned;
+    public bool specialOn;
 
 
     private void Awake(){
@@ -27,9 +36,12 @@ public class Player : MonoBehaviour {
     private void Start(){
 
         this.originalColor = GetComponent<Renderer>().material.color;
+        SFXPlayer.PlayAmbient();
 
         this.boostMeter = this.maxBoostMeter;
         this.health = this.maxHealth;
+        this.specialMeter = this.startingSpecialMeter;
+        this.specialOn = false;
     }
 
     private void Update(){
@@ -66,24 +78,60 @@ public class Player : MonoBehaviour {
             }
         }
 
+        if(this.health < 3){
+            SFXPlayer.AmbientControl("lowHealth");
+        } else if(recentlyRespawned){
+            SFXPlayer.AmbientControl("normal");
+            recentlyRespawned = false;
+        }
+
         if(_turnDirection != 0.0){
             _rigidbody.AddTorque(_turnDirection * this.turnSpeed);
+        }
+
+        if(this.specialMeter >= 90 && !this.specialOn){
+            this.specialOn = true;
+        }
+
+        if(this.specialOn){
+            this.specialMeter -= this.specialDecayRate;
+            StartCoroutine("SpecialFlash");
+            if(this.specialMeter <= 0) this.specialOn = false;
         }
     }
 
     private void Shoot(){
-        Bullet bullet = Instantiate(this.bulletPrefab, this.transform.position, this.transform.rotation);
-        bullet.Project(this.transform.up);
+        if(!this.specialOn){
+            SFXPlayer.PlaySound("shotCharlie");
+            instantiateBullet(this.transform.position, this.transform.rotation);
+        } else{
+            for(int i = 0; i < specialBulletCount; i++){
+                SFXPlayer.PlaySound("shotCharlie");
+                instantiateBullet(this.transform.position, this.transform.rotation);
+            }
+        }
+    }
+
+    private void instantiateBullet(Vector3 bulletPosition, Quaternion bulletRotation){
+            Bullet bullet = Instantiate(this.bulletPrefab, bulletPosition, bulletRotation);
+            if (this.specialOn){
+                float randomX = Random.Range(-bulletStrayFactor, bulletStrayFactor);
+                float randomY = Random.Range(-bulletStrayFactor, bulletStrayFactor);
+                float randomZ = Random.Range(-bulletStrayFactor, bulletStrayFactor);
+                bullet.transform.Rotate(randomX, randomY, randomZ);
+            }
+            bullet.Project(this.transform.up);
     }
 
     private void Boost() {
 
         if(this.boostMeter >= this.boostCost){
+            SFXPlayer.PlaySound("boost");
             Instantiate(this.bulletPrefab, this.transform.position, this.transform.rotation);
             ParticleSystem boost = Instantiate(this.boostPrefab, this.transform.position, this.transform.rotation);
             boostMeter -= this.boostCost;
             boost.Play();
-            _rigidbody.AddForce(this.transform.up * this.thrustSpeed * 20);
+            _rigidbody.AddForce(this.transform.up * this.thrustSpeed * 40);
         }
     }
 
@@ -100,12 +148,16 @@ public class Player : MonoBehaviour {
 
                 _rigidbody.velocity = Vector3.zero;
                 _rigidbody.angularVelocity = 0.0f;
+                SFXPlayer.PlaySound("deathCharlie");
+                SFXPlayer.AmbientControl("death");
+                recentlyRespawned = true;
 
                 this.gameObject.SetActive(false);
 
                 FindObjectOfType<GameManager>().PlayerDied(); //Bad practice, expensive function
             }
             else {
+                SFXPlayer.PlaySound("shotOnShip");
                 StartCoroutine("HitFlash");
             }
         }
@@ -116,5 +168,11 @@ public class Player : MonoBehaviour {
         yield return new WaitForSeconds(0.1f);
         this.gameObject.GetComponent<Renderer>().material.color = originalColor;
         StopCoroutine("HitFlash");
+    }
+
+    public IEnumerator SpecialFlash(){
+        this.gameObject.GetComponent<Renderer>().material.color = Color.green;
+        yield return new WaitForSeconds(0.2f);
+        this.gameObject.GetComponent<Renderer>().material.color = originalColor;        
     }
 }

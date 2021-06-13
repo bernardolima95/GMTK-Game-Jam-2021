@@ -45,9 +45,7 @@ public class Enemy : MonoBehaviour{
         
         if(collision.gameObject.tag == "Bullet") {
 
-            if(this.size >= 2*this.minSize) {
-                    
-            }
+            FindObjectOfType<SFXPlayer>().PlaySound("deathEnemy");
             FindObjectOfType<GameManager>().EnemyDestroyed(this);
             Destroy(this.gameObject);
         }
@@ -82,6 +80,7 @@ public class Enemy : MonoBehaviour{
     }
 
     private void Shoot(){
+        FindObjectOfType<SFXPlayer>().PlaySound("shotEnemy"); //não consegui carregar os audiosources em um prefab externo que poderia ser colocado dentro do Enemy
         Bullet bullet = Instantiate(this.bulletPrefab, this.transform.position, this.transform.rotation);
         bullet.Project(-this.transform.up);
     }

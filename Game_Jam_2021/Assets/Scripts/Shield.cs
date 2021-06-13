@@ -4,9 +4,11 @@ using UnityEngine;
 public class Shield : MonoBehaviour {
 
     public Player player;
+    public SFXPlayer SFXPlayer;
     public float turnSpeed = 1.0f;
     public float maxPotency = 100.0f;
     public float hitDegradation = 20.0f;
+    public float meterAccumulation = 10.0f;
     public float potency;
     public float respawnRate = 5.0f;
     private float _previousPlayerAngle;
@@ -46,9 +48,11 @@ public class Shield : MonoBehaviour {
         if (colliderTag == "Enemy" || colliderTag == "EnemyBullet"){
 
             this.potency -= this.hitDegradation;
+            this.player.specialMeter += this.meterAccumulation;
             
             if(this.potency < 0.0f){
                 this.potency = 0.0f;
+                SFXPlayer.PlaySound("shieldDespawn");
                 this.DespawnShield();
                 Invoke(nameof(RespawnShield), this.respawnRate);
             } else {
@@ -77,6 +81,7 @@ public class Shield : MonoBehaviour {
     }
 
     private IEnumerator HitFlash(){
+        SFXPlayer.PlaySound("shotOnShield");
         this.gameObject.GetComponent<Renderer>().material.color = new Color(160, 160, 160, 1);
         yield return new WaitForSeconds(0.1f);
         this.gameObject.GetComponent<Renderer>().material.color = originalColor;

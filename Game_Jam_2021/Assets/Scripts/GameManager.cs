@@ -41,6 +41,8 @@ public class GameManager : MonoBehaviour
 
         this.player.health = this.player.maxHealth;
         this.player.boostMeter = this.player.maxBoostMeter;
+        this.player.specialMeter = this.player.startingSpecialMeter;
+        this.player.specialOn = false;
         
         Invoke(nameof(TurnOnCollisions), this.invulnerabilityTime);
 
