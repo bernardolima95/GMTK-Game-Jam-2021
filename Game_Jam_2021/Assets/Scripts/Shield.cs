@@ -8,7 +8,7 @@ public class Shield : MonoBehaviour {
     public float turnSpeed = 1.0f;
     public float maxPotency = 100.0f;
     public float hitDegradation = 20.0f;
-    public float rechargeFactor = 0.00001f;
+    public float rechargeFactor = 1.0f;
     public float potency;
     public float respawnRate = 5.0f;
     private float _previousPlayerAngle;
@@ -46,7 +46,7 @@ public class Shield : MonoBehaviour {
 
         if(LayerMask.LayerToName(this.gameObject.layer) == "Ignore Collisions"){
             
-            this.Recharge(1.0f);
+            this.Recharge(0.5f);
             
             if(this.potency >= this.maxPotency){
                 this.Respawn();
@@ -72,7 +72,6 @@ public class Shield : MonoBehaviour {
                 this.potency = 0.0f;
                 SFXPlayer.PlaySound("shieldDespawn");
                 this.Despawn();
-                // Invoke(nameof(Respawn), this.respawnRate);
             } else {
                 StartCoroutine("HitFlash");
             }

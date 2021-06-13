@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -57,9 +58,12 @@ public class GameManager : MonoBehaviour
     }
 
     private void GameOver(){
-        this.lives = 3;
-        this.score = 0;
 
-        Invoke(nameof(Respawn), 3.0f);
+        PlayerPrefs.SetInt("score", this.score);
+        Invoke(nameof(GoToMenu), 1.5f);
+    }
+
+    private void GoToMenu(){
+        SceneManager.LoadScene("Menu");
     }
 }
