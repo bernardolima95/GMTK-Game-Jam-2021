@@ -8,10 +8,11 @@ public class Shield : MonoBehaviour {
     public float turnSpeed = 1.0f;
     public float maxPotency = 100.0f;
     public float hitDegradation = 20.0f;
-    public float meterAccumulation = 10.0f;
+    public float rechargeFactor = 0.00001f;
     public float potency;
     public float respawnRate = 5.0f;
     private float _previousPlayerAngle;
+    private Vector3 _previousPlayerPosition;
     private Color originalColor;
 
     private void Awake() {
@@ -29,15 +30,32 @@ public class Shield : MonoBehaviour {
     
     private void FixedUpdate() {
 
-        float playerAngle = player.transform.eulerAngles.z;
+        float playerAngle = this.player.transform.eulerAngles.z;
         float deltaAngle = Mathf.DeltaAngle(this._previousPlayerAngle, playerAngle);
 
         this.transform.Rotate(new Vector3(0, 0, deltaAngle * this.turnSpeed));
 
         this._previousPlayerAngle = playerAngle;
 
+        Vector3 playerPosition = this.player.transform.position;
+        Vector3 deltaPosition = playerPosition - this._previousPlayerPosition;
+
+        this._previousPlayerPosition = playerPosition;
+
+        this.Recharge(deltaPosition.magnitude);
+
+        if(LayerMask.LayerToName(this.gameObject.layer) == "Ignore Collisions"){
+            
+            this.Recharge(1.0f);
+            
+            if(this.potency >= this.maxPotency){
+                this.Respawn();
+            }
+        }
+
         if(!this.player.gameObject.activeSelf){
-            this.DespawnShield();
+            this.Despawn();
+            this.potency = 0.0f;
         }
     }
 
@@ -48,20 +66,29 @@ public class Shield : MonoBehaviour {
         if (colliderTag == "Enemy" || colliderTag == "EnemyBullet"){
 
             this.potency -= this.hitDegradation;
-            this.player.specialMeter += this.meterAccumulation;
+            this.player.AccumulateSpecial();
             
             if(this.potency < 0.0f){
                 this.potency = 0.0f;
                 SFXPlayer.PlaySound("shieldDespawn");
-                this.DespawnShield();
-                Invoke(nameof(RespawnShield), this.respawnRate);
+                this.Despawn();
+                // Invoke(nameof(Respawn), this.respawnRate);
             } else {
                 StartCoroutine("HitFlash");
             }
         }
     }
 
-    public void RespawnShield(){
+    public void Recharge(float recharge){
+
+        this.potency += recharge * this.rechargeFactor;
+
+        if(this.potency >= this.maxPotency){
+            this.potency = this.maxPotency;
+        }
+    }
+
+    public void Respawn(){
 
         if(LayerMask.LayerToName(this.gameObject.layer) != "Shield"){
             this.potency = this.maxPotency;
@@ -70,10 +97,9 @@ public class Shield : MonoBehaviour {
         this.gameObject.layer = LayerMask.NameToLayer("Shield");
         Renderer renderer = this.gameObject.GetComponent<Renderer>();
         renderer.enabled = true;
-
     }
 
-    private void DespawnShield(){
+    private void Despawn(){
 
         this.gameObject.layer = LayerMask.NameToLayer("Ignore Collisions");
         Renderer renderer = this.gameObject.GetComponent<Renderer>();

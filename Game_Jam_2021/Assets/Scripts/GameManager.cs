@@ -16,7 +16,10 @@ public class GameManager : MonoBehaviour
         ParticleSystem explosion = Instantiate(this.explosionPrefab, enemy.transform.position, enemy.transform.rotation);
         explosion.Play();
 
-        this.score += (int)(1/enemy.size*10);           
+        int scoreGained = (int)(1/enemy.size*10);
+
+        this.score += scoreGained;
+        this.player.AccumulateBoost(scoreGained);
     }
 
     public void PlayerDied(){
@@ -41,12 +44,12 @@ public class GameManager : MonoBehaviour
 
         this.player.health = this.player.maxHealth;
         this.player.boostMeter = this.player.maxBoostMeter;
-        this.player.specialMeter = this.player.startingSpecialMeter;
+        this.player.specialMeter = 0.0f;
         this.player.specialOn = false;
         
         Invoke(nameof(TurnOnCollisions), this.invulnerabilityTime);
 
-        this.shield.RespawnShield();
+        this.shield.Respawn();
     }
 
     private void TurnOnCollisions(){

@@ -11,10 +11,11 @@ public class Player : MonoBehaviour {
     public float turnSpeed = 1.0f;
     public float maxBoostMeter = 100.0f;
     public float boostCost = 20.0f;
+    public float boostAccumulationFactor = 1.0f;
     public float boostMeter;
     public float specialMeter;
     public float maxSpecialMeter = 100.0f;
-    public float startingSpecialMeter = 0.0f;
+    public float specialMeterAccumulation = 10.0f;
     public float specialBulletCount = 3;
     public float bulletStrayFactor = 20;
     public float specialDecayRate = 0.5f;
@@ -40,7 +41,7 @@ public class Player : MonoBehaviour {
 
         this.boostMeter = this.maxBoostMeter;
         this.health = this.maxHealth;
-        this.specialMeter = this.startingSpecialMeter;
+        this.specialMeter = 0.0f;
         this.specialOn = false;
     }
 
@@ -71,11 +72,6 @@ public class Player : MonoBehaviour {
 
         if(_thrusting){
             _rigidbody.AddForce(this.transform.up * this.thrustSpeed);
-
-            this.boostMeter += .3f;
-            if(this.boostMeter > this.maxBoostMeter){
-                this.boostMeter = this.maxBoostMeter;
-            }
         }
 
         if(this.health < 3){
@@ -89,38 +85,63 @@ public class Player : MonoBehaviour {
             _rigidbody.AddTorque(_turnDirection * this.turnSpeed);
         }
 
-        if(this.specialMeter >= 90 && !this.specialOn){
+        if(this.specialMeter >= this.maxSpecialMeter && !this.specialOn){
             this.specialOn = true;
         }
 
         if(this.specialOn){
             this.specialMeter -= this.specialDecayRate;
             StartCoroutine("SpecialFlash");
-            if(this.specialMeter <= 0) this.specialOn = false;
+            if(this.specialMeter <= 0.0f){
+                this.specialMeter = 0.0f;
+                this.specialOn = false;
+            }
         }
     }
 
     private void Shoot(){
+
         if(!this.specialOn){
-            SFXPlayer.PlaySound("shotCharlie");
-            instantiateBullet(this.transform.position, this.transform.rotation);
-        } else{
-            for(int i = 0; i < specialBulletCount; i++){
-                SFXPlayer.PlaySound("shotCharlie");
-                instantiateBullet(this.transform.position, this.transform.rotation);
+            this.SFXPlayer.PlaySound("shotCharlie");
+            InstantiateBullet(this.transform.position, this.transform.rotation);
+        }
+        else{
+            for(int i=0; i<this.specialBulletCount; i++){
+                this.SFXPlayer.PlaySound("shotCharlie");
+                InstantiateBullet(this.transform.position, this.transform.rotation);
             }
         }
     }
 
-    private void instantiateBullet(Vector3 bulletPosition, Quaternion bulletRotation){
+    public void AccumulateBoost(float accumulation){
+
+        this.boostMeter += accumulation * this.boostAccumulationFactor;
+
+        if(this.boostMeter > this.maxBoostMeter){
+            this.boostMeter = this.maxBoostMeter;
+        }
+    }
+
+    public void AccumulateSpecial(){
+
+        this.specialMeter += this.specialMeterAccumulation;
+
+        if(this.specialMeter > this.maxSpecialMeter){
+            this.specialMeter = this.maxSpecialMeter;
+        }
+    }
+
+    private void InstantiateBullet(Vector3 bulletPosition, Quaternion bulletRotation){
+
             Bullet bullet = Instantiate(this.bulletPrefab, bulletPosition, bulletRotation);
-            if (this.specialOn){
-                float randomX = Random.Range(-bulletStrayFactor, bulletStrayFactor);
-                float randomY = Random.Range(-bulletStrayFactor, bulletStrayFactor);
-                float randomZ = Random.Range(-bulletStrayFactor, bulletStrayFactor);
-                bullet.transform.Rotate(randomX, randomY, randomZ);
+
+            if(this.specialOn){
+                
+                float angle = Random.Range(-bulletStrayFactor, bulletStrayFactor);
+                bullet.transform.Rotate(new Vector3(0, 0, angle));
             }
-            bullet.Project(this.transform.up);
+
+            bullet.Project(bullet.transform.up);
     }
 
     private void Boost() {
